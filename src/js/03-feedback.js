@@ -7,29 +7,30 @@ const refs = {
 refs.formElement.addEventListener('input', throttle(onformInput, 500));
 refs.formElement.addEventListener('submit', onformSubmit);
 
+let feedback = {};
+
 function onformInput(event) {
-  const key = event.target.name;
-  const value = event.target.value;
-  localStorage.setItem(key, value);
+  feedback[event.target.name] = event.target.value;
+  localStorage.setItem('feedback-form-state', JSON.stringify(feedback));
 }
 
-function onLoad() {
-  const email = localStorage.getItem('email');
-  const message = localStorage.getItem('message');
-  refs.formElement.email.value = email || '';
-  refs.formElement.message.value = message || '';
+changeInputs();
+
+function changeInputs() {
+  const feedbackParce = JSON.parse(localStorage.getItem('feedback-form-state'));
+  feedback = { ...feedbackParce };
+  refs.formElement.email.value = feedback.email || '';
+  refs.formElement.message.value = feedback.message || '';
 }
-onLoad();
 
 function onformSubmit(event) {
   event.preventDefault();
-  const email = refs.formElement.email.value;
-  const message = refs.formElement.message.value;
-  const result = {
-    email,
-    message,
-  };
-  console.log(result);
-  event.target.reset();
-  localStorage.removeItem('email'), localStorage.removeItem('message');
-};
+  if (refs.formElement.message.value !== "" && refs.formElement.email.value !== "") {
+    console.log(feedback);
+    event.target.reset();
+    localStorage.removeItem('feedback-form-state');
+    return
+  } 
+    alert("Всі поля повинні бути заповнені");
+     }
+
