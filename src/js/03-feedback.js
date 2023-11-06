@@ -27,6 +27,7 @@ function onformSubmit(event) {
   event.preventDefault();
   if (refs.formElement.message.value !== "" && refs.formElement.email.value !== "") {
     console.log(feedback);
+    feedback = {};
     event.target.reset();
     localStorage.removeItem('feedback-form-state');
     return
